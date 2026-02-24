@@ -1,0 +1,74 @@
+BALITRICKS DATABASE - ERD
+
+┌─────────────────────┐
+│       KNIFE         │
+├─────────────────────┤
+│ knife_id (PK)       │
+│ name                │
+│ brand               │
+│ date_purchased      │
+│ pivot_type          │
+│ blade_length        │
+│ weight              │
+│ last_maintained_date│
+│ condition           │
+└──────────┬──────────┘
+           │
+           │ 1:N
+           │
+           ├──────────────────┐
+           │                  │
+           │                  │
+    ┌──────▼──────────┐  ┌────▼──────────────┐
+    │ TRICK_PROGRESS  │  │ MAINTENANCE_EVENT │
+    ├─────────────────┤  ├───────────────────┤
+    │ knife_id (FK)   │  │ maintenance_id(PK)│
+    │ trick_id (FK)   │  │ knife_id (FK)     │
+    │ date_first_     │  │ maintenance_date  │
+    │   learned       │  │ maintenance_type  │
+    │ date_last_      │  │ notes             │
+    │   practiced     │  └───────────────────┘
+    │ mastered        │
+    │ confidence_level│
+    └──────┬──────────┘
+           │
+           │ N:1
+           │
+    ┌──────▼──────────┐
+    │      TRICK      │
+    ├─────────────────┤
+    │ trick_id (PK)   │
+    │ name            │
+    │ difficulty      │
+    │ category        │
+    │ description     │
+    └──────┬──────────┘
+           │
+           │ 1:N
+           │
+    ┌──────▼──────────┐
+    │ SESSION_TRICKS  │
+    ├─────────────────┤
+    │ session_id (FK) │
+    │ trick_id (FK)   │
+    │ attempts        │
+    │ success_rate    │
+    └──────┬──────────┘
+           │
+           │ N:1
+           │
+    ┌──────▼──────────────┐
+    │ PRACTICE_SESSION    │
+    ├─────────────────────┤
+    │ session_id (PK)      │
+    │ session_date         │
+    │ duration_minutes     │
+    │ notes                │
+    └─────────────────────┘
+
+RELATIONSHIPS:
+- Knife 1:N Maintenance_Event (one knife has many maintenance events)
+- Knife M:N Trick (through Trick_Progress junction table)
+- Trick M:N Practice_Session (through Session_Tricks junction table)
+- Trick_Progress tracks which tricks have been learned with which knives
+- Session_Tricks tracks which tricks were practiced in which sessions
